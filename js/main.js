@@ -53,7 +53,7 @@ function play(trackObj, artist, track, albumArtURL)
 	$('div.album').append('<img src="' + albumArtURL + ' height="150" width="150" id="art">');
 
 	var rotation = function (){
-		$('div.vinyl').rotate({
+		$('div.album').rotate({
 		  angle:0, 
 		  animateTo:360, 
 		  callback: rotation,
