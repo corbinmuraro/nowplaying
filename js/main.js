@@ -6,10 +6,6 @@ var currentArtist = "", currentSong = "",
 	newArist, newSong, newAlbum, newAlbumArt,
 	nowPlaying;
 
-
-
-var container = $('div.container');
-
 setInterval(ajaxCall, 20000);
 
 function ajaxCall() {
@@ -23,31 +19,21 @@ function ajaxCall() {
 			format: 'json'
 		},
 		success: function(tracks) {
-
-
 			var trackObject = tracks.recenttracks.track[0];
-
-			isPlaying(trackObject);
 
 			newArtist = trackObject.artist["#text"];
 			newSong = trackObject.name;
 
-			if (!isPlaying(newSong, newArtist))
-			{
-				stop();
-			}
-
 			if ((newSong != currentSong) || (newArtist != currentArtist))
 			{
+				console.log("NEW SONG PLAYING (in ajax function)");
 				currentSong = newSong;
 				currentArtist = newArtist;
 
 				// album = trackObject.album["#text"];
 				newAlbumArt = trackObject.image[3]["#text"];
 
-				// getDuration(currentSong, currentArtist);
-
-				play(newArtist,newSong,newAlbumArt);
+				play(trackObject, newArtist,newSong,newAlbumArt);
 			}
 		}
 	});
@@ -55,14 +41,33 @@ function ajaxCall() {
 
 // displays currunt track to the DOM
 // RETURNS nothing
-function play(artist, track, albumArtURL)
+function play(trackObj, artist, track, albumArtURL)
 {
+	isPlaying(trackObj);
 	nowPlaying = "Now playing " + track + " by " + artist;
 
-	container.empty();
-	container.append('<div>' + nowPlaying + '</div>');
-	container.append('<img src="' + albumArtURL + '" height="150" width="150">');
+	$('div.text').empty();
+	$('div.album').empty();
+
+	$('div.text').append('<div>' + nowPlaying + '</div>');
+	$('div.album').append('<img src="' + albumArtURL + ' height="150" width="150" id="art">');
+
+	var rotation = function (){
+		$('div.vinyl').rotate({
+		  angle:0, 
+		  animateTo:360, 
+		  callback: rotation,
+		  duration: 2000,
+		  easing: function (x,t,b,c,d){        // t: current time, b: begInnIng value, c: change In value, d: duration
+		      return c*(t/d)+b;
+		  }
+		});
+	};
+
+	rotation();
 }
+
+
 
 // checks if a song is currently playing
 // RETURNS true if playing
@@ -70,16 +75,23 @@ function play(artist, track, albumArtURL)
 function isPlaying(track)
 {
 	console.log(track);
-	if(track.hasOwnProperty('@attr')) {
-		if(track['@attr'].hasOwnProperty('nowplaying')) {
-			if(track['@attr'].nowplaying == 'true') {
+	if(track.hasOwnProperty('@attr')) 
+	{
+		if(track['@attr'].hasOwnProperty('nowplaying')) 
+		{
+			if(track['@attr'].nowplaying == 'true') 
+			{
+				console.log("true");
 				return true;
 			}
 		}
 	}
+	else
+	{
+		console.log("false");
+		return false;
 
-	console.log('false');
-	return false;
+	}
 }
 
 

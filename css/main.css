@@ -1,3 +1,43 @@
 .container {
 	text-align: center;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.vinyl {
+	position: relative;
+	margin: 0 auto;
+	width: 354px;
+	height: 354px;
+}
+
+.vinyl-top, .album, .vinyl-bottom {
+	position: absolute;
+}
+
+
+.vinyl-top {
+	z-index: 3;
+}
+
+.album {
+	text-align: center;
+	z-index: 2;
+	top: 0;
+	bottom: 0;
+	left:0;
+	right:0;
+	margin: auto;
+	width: 100%;
+	height: 42%;
+}
+
+#art {
+	border-radius: 50%;
+}
+
+
+
+.vinyl-bottom {
+	z-index: 1;
 }
