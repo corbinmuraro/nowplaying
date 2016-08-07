@@ -2,11 +2,11 @@ $(function() {
 	ajaxCall();
 });
 
-var currentArtist = "", currentSong = "",
-	newArist, newSong, newAlbum, newAlbumArt,
-	nowPlaying;
+var timeoutLength = 20000;
 
-setInterval(ajaxCall, 20000);
+var loggedArtist = "", loggedSong = "", loggedAlbumArt = "",
+	newArist, recentSong, recentAlbum, recentAlbumArt,
+	message;
 
 function ajaxCall() {
 	$.ajax({
@@ -21,76 +21,112 @@ function ajaxCall() {
 		success: function(tracks) {
 			var trackObject = tracks.recenttracks.track[0];
 
-			newArtist = trackObject.artist["#text"];
-			newSong = trackObject.name;
+			recentArtist = trackObject.artist["#text"];
+			recentSong = trackObject.name;
+			recentAlbumArt = trackObject.image[3]["#text"];
 
-			if ((newSong != currentSong) || (newArtist != currentArtist))
+			if (isPlaying(trackObject))
 			{
-				console.log("NEW SONG PLAYING (in ajax function)");
-				currentSong = newSong;
-				currentArtist = newArtist;
+				console.log(trackObject);
+				timeoutLength = 20000;
 
-				// album = trackObject.album["#text"];
-				newAlbumArt = trackObject.image[3]["#text"];
+				// checks if the song has changed since the last AJAX call
+				if ((recentSong != loggedSong) || (recentArtist != loggedArtist))
+				{
+					console.log("NEW SONG PLAYING");
 
-				play(trackObject, newArtist,newSong,newAlbumArt);
+					// update loggedSong and loggedArtist variables
+					loggedSong = recentSong; 
+					loggedArtist = recentArtist;
+
+					// get additional metadata for display purposes
+					// album = trackObject.album["#text"];
+					
+					display(true, recentArtist, recentSong, recentAlbumArt);
+
+					spinRecord();
+				}
 			}
+
+			else 
+			{
+				timeoutLength = 2000000;	// reduce AJAX call rate if no music is playing
+
+				display(false, recentArtist, recentSong, recentAlbumArt);
+
+				stopRecord();
+
+			}
+
 		}
 	});
+
+	setTimeout(ajaxCall, timeoutLength);
 }
 
-// displays currunt track to the DOM
-// RETURNS nothing
-function play(trackObj, artist, track, albumArtURL)
+// displays current track info and artwork to DOM
+function display(playing, artist, track, albumArtURL)
 {
-	isPlaying(trackObj);
-	nowPlaying = "Now playing " + track + " by " + artist;
+	if (playing)
+	{
+		message = "I'm currently listening to " + track + " by " + artist;
+	}
+	else
+	{
+		message = "Last played " + track + " by " + artist;
+	}
+
 
 	$('div.text').empty();
 	$('div.album').empty();
 
-	$('div.text').append('<div>' + nowPlaying + '</div>');
+	$('div.text').append('<div>' + message + '</div>');
 	$('div.album').append('<img src="' + albumArtURL + ' height="150" width="150" id="art">');
-
-	var rotation = function (){
-		$('div.album').rotate({
-		  angle:0, 
-		  animateTo:360, 
-		  callback: rotation,
-		  duration: 2000,
-		  easing: function (x,t,b,c,d){        // t: current time, b: begInnIng value, c: change In value, d: duration
-		      return c*(t/d)+b;
-		  }
-		});
-	};
-
-	rotation();
 }
 
+// spins the record recursively
+var spinRecord = function (){
+	$('div.album').rotate({
+	  angle:0, 
+	  animateTo:360, 
+	  callback: spinRecord,
+	  duration: 2000,
+	  easing: function (x,t,b,c,d){        // t: current time, b: begInnIng value, c: change In value, d: duration
+	      return c*(t/d)+b;
+	  }
+	});
+};
 
+// stops the record spinning
+var stopRecord = function(){
+	$('div.album').rotate({
+	  angle:0, 
+	  animateTo:360, 
+	  duration: 0,
+	  easing: function (x,t,b,c,d){        // t: current time, b: begInnIng value, c: change In value, d: duration
+	      return c*(t/d)+b;
+	  }
+	});
+};
 
 // checks if a song is currently playing
 // RETURNS true if playing
 // RETURNS false if not playing
 function isPlaying(track)
 {
-	console.log(track);
 	if(track.hasOwnProperty('@attr')) 
 	{
 		if(track['@attr'].hasOwnProperty('nowplaying')) 
 		{
 			if(track['@attr'].nowplaying == 'true') 
 			{
-				console.log("true");
 				return true;
 			}
 		}
 	}
 	else
 	{
-		console.log("false");
 		return false;
-
 	}
 }
 
