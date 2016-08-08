@@ -6,6 +6,7 @@ var timeoutLength = 20000;
 
 var loggedArtist = "", loggedSong = "", loggedAlbumArt = "",
 	newArist, recentSong, recentAlbum, recentAlbumArt,
+	artistURL, songURL,
 	message;
 
 function ajaxCall() {
@@ -21,20 +22,21 @@ function ajaxCall() {
 		success: function(tracks) {
 			var trackObject = tracks.recenttracks.track[0];
 
+			songURL = trackObject.url;
+			artistURL = trimURL(trackObject.url) + '/';
+			// artistURL = trackObject.url
+
 			recentArtist = trackObject.artist["#text"];
 			recentSong = trackObject.name;
 			recentAlbumArt = trackObject.image[3]["#text"];
 
 			if (isPlaying(trackObject))
 			{
-				console.log(trackObject);
 				timeoutLength = 20000;
 
 				// checks if the song has changed since the last AJAX call
 				if ((recentSong != loggedSong) || (recentArtist != loggedArtist))
 				{
-					console.log("NEW SONG PLAYING");
-
 					// update loggedSong and loggedArtist variables
 					loggedSong = recentSong; 
 					loggedArtist = recentArtist;
@@ -55,9 +57,7 @@ function ajaxCall() {
 				display(false, recentArtist, recentSong, recentAlbumArt);
 
 				stopRecord();
-
 			}
-
 		}
 	});
 
@@ -69,11 +69,11 @@ function display(playing, artist, track, albumArtURL)
 {
 	if (playing)
 	{
-		message = "I'm currently listening to " + track + " by " + artist;
+		message = "Currently listening to: <a href='" + songURL + "'>" + track + "</a>" + " by " + "<a href='" + artistURL + "'>" + artist + "</a>";
 	}
 	else
 	{
-		message = "Last played " + track + " by " + artist;
+		message = "Last played: <a href='" + songURL + "'>" + track + "</a>" + " by " + "<a href='" + artistURL + "'>" + artist + "</a>";
 	}
 
 
@@ -81,7 +81,7 @@ function display(playing, artist, track, albumArtURL)
 	$('div.album').empty();
 
 	$('div.text').append('<div>' + message + '</div>');
-	$('div.album').append('<img src="' + albumArtURL + ' height="150" width="150" id="art">');
+	$('div.album').append('<img src="' + albumArtURL + ' id="art">');
 }
 
 // spins the record recursively
@@ -99,7 +99,7 @@ var spinRecord = function (){
 
 // stops the record spinning
 var stopRecord = function(){
-	$('div.album').rotate({
+	$('img').rotate({
 	  angle:0, 
 	  animateTo:360, 
 	  duration: 0,
@@ -128,6 +128,16 @@ function isPlaying(track)
 	{
 		return false;
 	}
+}
+
+// trims last.fm song url into a last.fm artist URL
+// RETURNS trimmed artist URL string
+function trimURL (url) 
+{
+	var array = url.split('/');
+	array.pop();
+	array.pop();
+	return (array.join('/'));
 }
 
 

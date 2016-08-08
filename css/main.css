@@ -1,4 +1,4 @@
-html. body {
+html, body {
 	max-width: 100%;
 	overflow: hidden;
 }
@@ -13,47 +13,61 @@ html. body {
 .middle {
 	display: table-cell;
 	vertical-align: middle;
-	text-align: center;
 }
 
 .text {
-	margin: 50px;
-		font-family: Helvetica;
-
+	font-family: Helvetica, sans-serif;
+	text-align: center;
+	margin: 0 20px;
 }
 
 .vinyl {
 	position: relative;
-	margin: 0 auto;
-	width: 354px;
-	height: 354px;
+	width: 100%;
+	height: 80%;
+	overflow: hidden;
 }
 
 .vinyl-top, .album, .vinyl-bottom {
 	position: absolute;
+	left: 25%;
 }
 
+.vinyl-top, .vinyl-bottom {
+	width: 40vw;
+	height: 40vw;
+}
+
+.vinyl-top img, .vinyl-bottom img {
+	width: 100%;
+	height: 100%;
+}
 
 .vinyl-top {
 	z-index: 3;
 }
 
 .album {
-	text-align: center;
 	z-index: 2;
-	top: 0;
-	bottom: 0;
-	left:0;
-	right:0;
-	margin: auto;
-	width: 100%;
-	height: 42%;
-}
-
-#art {
-	border-radius: 50%;
+	width: 15vw;
+	height: 15vw;
+	border: 5px black;
+	left: 40%;
+	top: 12.5vw;
 }
 
 .vinyl-bottom {
 	z-index: 1;
+}
+
+.album img {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+}
+
+@media only screen and (max-width: 600px) {
+    .vinyl {
+    	height: 50%;
+    }
 }
