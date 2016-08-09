@@ -52,7 +52,7 @@ html, body {
 	width: 15vw;
 	height: 15vw;
 	border: 5px black;
-	left: 40%;
+	left: 37.5%;
 	top: 12.5vw;
 }
 
@@ -68,6 +68,6 @@ html, body {
 
 @media only screen and (max-width: 600px) {
     .vinyl {
-    	height: 50%;
+    	height: 60%;
     }
 }
