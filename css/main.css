@@ -30,7 +30,7 @@ html, body {
 
 .vinyl-top, .album, .vinyl-bottom {
 	position: absolute;
-	left: 25%;
+	left: 30%;
 }
 
 .vinyl-top, .vinyl-bottom {
@@ -52,7 +52,7 @@ html, body {
 	width: 15vw;
 	height: 15vw;
 	border: 5px black;
-	left: 37.5%;
+	left: 42.5%;
 	top: 12.5vw;
 }
 
