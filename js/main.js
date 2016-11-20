@@ -46,7 +46,9 @@ function ajaxCall() {
 					
 					display(true, recentArtist, recentSong, recentAlbumArt);
 
-					spinRecord();
+					// let's spin that record!
+					$('.album').addClass('rotate');
+					// $('.album').removeClass('.stopRotate');
 				}
 			}
 
@@ -56,7 +58,9 @@ function ajaxCall() {
 
 				display(false, recentArtist, recentSong, recentAlbumArt);
 
-				stopRecord();
+				$('.album').removeClass('rotate');
+				// $('.album').addClass('.stopRotate');
+
 			}
 		}
 	});
@@ -84,30 +88,6 @@ function display(playing, artist, track, albumArtURL)
 	$('div.album').append('<img src="' + albumArtURL + ' id="art">');
 }
 
-// spins the record recursively
-var spinRecord = function (){
-	$('img').rotate({
-	  angle:0, 
-	  animateTo:360, 
-	  callback: spinRecord,
-	  duration: 2000,
-	  easing: function (x,t,b,c,d){        // t: current time, b: begInnIng value, c: change In value, d: duration
-	      return c*(t/d)+b;
-	  }
-	});
-};
-
-// stops the record spinning
-var stopRecord = function(){
-	$('img').rotate({
-	  angle:0, 
-	  animateTo:360, 
-	  duration: 0,
-	  easing: function (x,t,b,c,d){        // t: current time, b: begInnIng value, c: change In value, d: duration
-	      return c*(t/d)+b;
-	  }
-	});
-};
 
 // checks if a song is currently playing
 // RETURNS true if playing
