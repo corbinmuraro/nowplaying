@@ -86,7 +86,7 @@ function display(playing, artist, track, albumArtURL)
 
 // spins the record recursively
 var spinRecord = function (){
-	$('div.album').rotate({
+	$('img').rotate({
 	  angle:0, 
 	  animateTo:360, 
 	  callback: spinRecord,
